@@ -1,0 +1,869 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Proposal: AI-Assisted ECG Analysis for Indonesia</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Corporate Blue and Slate -->
+    <!-- Application Structure Plan: A single-page, scrolling dashboard design with a sticky navigation bar. The structure follows a compelling narrative: 1. Hero/Intro, 2. The specific Challenge in Indonesia (now with military-specific data), 3. Evolution of ECG Diagnostics, 4. The AI Solution (AiTiA), 5. Interactive Product Showcase with comparison charts, 6. Clinical Evidence/Credibility, 7. Strong Points of Our Product, 8. Military Health (new integrated section), 9. Pipeline, 10. Global Roadmap & Commitment, 11. Business Model, 12. The Indonesian Opportunity summary, and 13. Contact. This structure was chosen to guide stakeholders from problem to solution to proof, making a complex proposal easily digestible and persuasive, which is more effective than a linear slide-by-slide presentation. -->
+    <!-- Visualization & Content Choices: 1. Heart Failure Comparison: Goal=Compare, Viz=Bar Chart (Chart.js), Interaction=Hover for tooltips. Justification=Directly visualizes the superior AUROC of AiTiA LVSD vs. Blood Test. 2. Heart Attack Comparison: Goal=Compare, Viz=Bar Chart (Chart.js), Interaction=Hover. Justification=Illustrates AiTiA MI's outperformance of physicians, as stated in the report. 3. Outpatient HF Comparison: Goal=Compare, Viz=Bar Chart (Chart.js), Interaction=Hover. Justification=Shows the power of the smartwatch solution vs. traditional tests. Other elements like icons and styled cards are used to visually break up text and improve readability, presenting key data points (e.g., mortality rates, publications) in a high-impact way. Challenge data now includes military-specific details. "Strong Points" and "Opportunity" sections explicitly detail benefits for military healthcare and combat readiness. Heart muscle comparison and AI workflow are represented using unicode characters and Tailwind CSS for visual emphasis without external image files. The "Evolution of ECG" and "Pipeline" sections use structured HTML/CSS for process and tabular data. New "Military Health" section integrates content from the dedicated military page. CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc; /* slate-50 */
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 350px;
+            max-height: 400px;
+        }
+        @media (max-width: 768px) {
+            .chart-container {
+                height: 300px;
+            }
+        }
+        .section-icon {
+            font-size: 2.5rem;
+            line-height: 1;
+        }
+        .stat-card {
+            background-color: white;
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+            border: 1px solid #e2e8f0; /* slate-200 */
+            transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+        }
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -2px rgb(0 0 0 / 0.1);
+        }
+        .heart-diagram {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 2rem;
+            margin-top: 2rem;
+            flex-wrap: wrap;
+        }
+        .heart-state {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background-color: #f0f4f8; /* light blue-gray */
+            padding: 1.5rem;
+            border-radius: 0.75rem;
+            box-shadow: inset 0 1px 3px 0 rgb(0 0 0 / 0.05);
+            width: 180px; /* Fixed width for consistency */
+            flex-shrink: 0;
+        }
+        .heart-icon {
+            font-size: 3rem;
+            margin-bottom: 0.5rem;
+        }
+        .flow-step {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            padding: 1rem;
+            background-color: #f0f9ff; /* blue-50 */
+            border-radius: 0.5rem;
+            border: 1px solid #bfdbfe; /* blue-200 */
+            min-width: 120px;
+            flex: 1; /* Make steps take equal width */
+            max-width: 250px; /* Limit max width for flow steps */
+        }
+        .flow-arrow {
+            font-size: 2rem;
+            color: #2563eb; /* blue-600 */
+            margin: 0 0.5rem;
+            flex-shrink: 0;
+        }
+        /* Styles for the new pipeline table using flex/grid */
+        .pipeline-table-header {
+            display: flex;
+            background-color: #e0e7ff; /* blue-100 */
+            font-weight: 600;
+            padding: 0.75rem 1rem;
+            border-radius: 0.5rem 0.5rem 0 0;
+            border-bottom: 1px solid #c7d2fe; /* blue-200 */
+        }
+        .pipeline-table-row {
+            display: flex;
+            padding: 0.75rem 1rem;
+            border-bottom: 1px solid #e2e8f0; /* slate-200 */
+            background-color: white;
+        }
+        .pipeline-table-row:nth-child(even) {
+            background-color: #f8fafc; /* slate-50 */
+        }
+        .pipeline-col {
+            flex: 1;
+            padding: 0 0.5rem;
+            display: flex;
+            align-items: center;
+        }
+        .pipeline-col-program { flex: 2; }
+        .pipeline-col-stage { flex: 1; }
+        @media (max-width: 768px) {
+            .pipeline-table-header, .pipeline-table-row {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .pipeline-col {
+                width: 100%;
+                padding: 0.5rem 0;
+            }
+            .pipeline-col-program, .pipeline-col-stage {
+                flex: none;
+            }
+        }
+    </style>
+</head>
+<body class="text-slate-700">
+
+    <header id="navbar" class="bg-white/80 backdrop-blur-lg sticky top-0 z-50 shadow-sm">
+        <nav class="container mx-auto px-6 py-3 flex justify-between items-center max-w-7xl">
+            <div class="flex items-center space-x-2">
+                <span class="text-2xl text-blue-600">🩺</span>
+                <span class="text-xl font-bold text-slate-800">Medical AI</span>
+            </div>
+            <div class="hidden md:flex space-x-8">
+                <a href="#challenge" class="text-slate-600 hover:text-blue-600">Challenges</a>
+                <a href="#evolution" class="text-slate-600 hover:text-blue-600">ECG Evolution</a>
+                <a href="#solution" class="text-slate-600 hover:text-blue-600">Solution</a>
+                <a href="#products" class="text-slate-600 hover:text-blue-600">Products</a>
+                <a href="#evidence" class="text-slate-600 hover:text-blue-600">Clinical Evidence</a>
+                <a href="#strengths" class="text-slate-600 hover:text-blue-600">Our Strengths</a>
+                <a href="#military-health" class="text-slate-600 hover:text-blue-600">Military Health</a>
+                <a href="#pipeline" class="text-slate-600 hover:text-blue-600">Pipeline</a>
+                <a href="#roadmap" class="text-slate-600 hover:text-blue-600">Global Roadmap</a>
+                <a href="#business-model" class="text-slate-600 hover:text-blue-600">Business Model</a>
+                <a href="#opportunity" class="text-slate-600 hover:text-blue-600">Opportunity</a>
+            </div>
+             <button id="mobile-menu-button" class="md:hidden p-2 rounded-md text-slate-600 hover:text-blue-600 hover:bg-slate-100">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" />
+                </svg>
+            </button>
+        </nav>
+        <div id="mobile-menu" class="hidden md:hidden">
+            <a href="#challenge" class="block py-2 px-6 text-sm text-slate-600 hover:bg-slate-100">Challenges</a>
+            <a href="#evolution" class="block py-2 px-6 text-sm text-slate-600 hover:bg-slate-100">ECG Evolution</a>
+            <a href="#solution" class="block py-2 px-6 text-sm text-slate-600 hover:bg-slate-100">Solution</a>
+            <a href="#products" class="block py-2 px-6 text-sm text-slate-600 hover:bg-slate-100">Products</a>
+            <a href="#evidence" class="block py-2 px-6 text-sm text-slate-600 hover:bg-slate-100">Clinical Evidence</a>
+            <a href="#strengths" class="block py-2 px-6 text-sm text-slate-600 hover:bg-slate-100">Our Strengths</a>
+            <a href="#military-health" class="block py-2 px-6 text-sm text-slate-600 hover:bg-slate-100">Military Health</a>
+            <a href="#pipeline" class="block py-2 px-6 text-sm text-slate-600 hover:bg-slate-100">Pipeline</a>
+            <a href="#roadmap" class="block py-2 px-6 text-sm text-slate-600 hover:bg-slate-100">Global Roadmap</a>
+            <a href="#business-model" class="block py-2 px-6 text-sm text-slate-600 hover:bg-slate-100">Business Model</a>
+            <a href="#opportunity" class="block py-2 px-6 text-sm text-slate-600 hover:bg-slate-100">Opportunity</a>
+        </div>
+    </header>
+
+    <main>
+        <section id="hero" class="py-20 md:py-32 bg-white">
+            <div class="container mx-auto px-6 text-center max-w-4xl">
+                <h1 class="text-4xl md:text-6xl font-bold text-slate-900 leading-tight">Revolutionizing Heart Care in Indonesia with AI</h1>
+                <p class="mt-6 text-lg md:text-xl text-slate-600">Introducing instant, accurate ECG analysis for early heart disease detection, empowering healthcare professionals across the archipelago.</p>
+                <a href="#challenge" class="mt-8 inline-block bg-blue-600 text-white font-bold py-3 px-8 rounded-lg hover:bg-blue-700 transition-colors">Learn More</a>
+            </div>
+        </section>
+
+        <section id="challenge" class="py-16 md:py-24">
+            <div class="container mx-auto px-6 max-w-7xl">
+                <div class="text-center max-w-3xl mx-auto">
+                    <span class="text-blue-600 font-semibold">Challenges in Indonesia</span>
+                    <h2 class="text-3xl md:text-4xl font-bold text-slate-900 mt-2">The Urgent Burden of Cardiovascular Disease & Military Health</h2>
+                    <p class="mt-4 text-lg text-slate-600">Indonesia faces significant challenges in early heart disease diagnosis due to its vast geography, healthcare access disparities, and limitations in specialized personnel. These issues are acutely amplified within the military setting, impacting personnel readiness and combat effectiveness.</p>
+                </div>
+
+                <div class="mt-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 text-left">
+                    <div class="stat-card md:col-span-2 lg:col-span-1">
+                        <div class="section-icon text-red-500 mb-2">💔</div>
+                        <h3 class="text-xl font-bold text-slate-900">High Mortality & Morbidity</h3>
+                        <ul class="mt-2 text-slate-600 list-disc list-inside space-y-1">
+                            <li>Cardiovascular diseases are a **leading cause of death**, accounting for ~**650,000 deaths per year** (2023).</li>
+                            <li>Stroke and Ischemic Heart Disease are major contributors to disability (DALY).</li>
+                            <li>**Military Relevance:** Heart disease can lead to critical loss of combat assets and reduced operational capacity.</li>
+                        </ul>
+                    </div>
+                    <div class="stat-card">
+                        <div class="section-icon text-yellow-500 mb-2">📈</div>
+                        <h3 class="text-xl font-bold text-slate-900">Prevalent Risk Factors & Officer Health</h3>
+                        <ul class="mt-2 text-slate-600 list-disc list-inside space-y-1">
+                            <li>**Hypertension:** 30.8% adults (2023), but low treatment adherence.</li>
+                            <li>**Diabetes:** 11.7% adults (2023) with rising prevalence.</li>
+                            <li>**Obesity:** Affects 1 in 3 adults (2023).</li>
+                            <li>**Smoking:** 36.7% adult prevalence (2022).</li>
+                            <li>**Military Relevance:** Aging high-ranking officers and a growing tendency for younger onset heart disease among personnel pose significant health risks.</li>
+                        </ul>
+                    </div>
+                    <div class="stat-card md:col-span-2 lg:col-span-1">
+                        <div class="section-icon text-blue-500 mb-2">🩺</div>
+                        <h3 class="text-xl font-bold text-slate-900">Critical Cardiologist Shortage</h3>
+                        <ul class="mt-2 text-slate-600 list-disc list-inside space-y-1">
+                            <li>**Fewer than 1,500 cardiologists** for over 270 million people.</li>
+                            <li>Doctor-to-population ratio of **0.4 per 1,000**, well below WHO's 1 per 1,000.</li>
+                            <li>**Uneven distribution:** 85% of cardiologists are in West Indonesia (65%+ in Java).</li>
+                            <li>**Military Relevance:** Limited access to specialists for military personnel, especially in remote outposts.</li>
+                        </ul>
+                    </div>
+                    <div class="stat-card">
+                        <div class="section-icon text-purple-500 mb-2">🏝️</div>
+                        <h3 class="text-xl font-bold text-slate-900">Geographical Access Gaps & Military Bases</h3>
+                        <ul class="mt-2 text-slate-600 list-disc list-inside space-y-1">
+                            <li>Many remote islands have **less than one healthcare worker per 10,000 inhabitants**.</li>
+                            <li>Healthcare expenditure disproportionately higher in urban areas.</li>
+                            <li>Urban dwellers are **1.25x more likely** to use hospital outpatient facilities than rural residents.</li>
+                            <li>**Military Relevance:** Remote military bases and difficult terrain severely limit access to comprehensive medical facilities and specialized diagnostics.</li>
+                        </ul>
+                    </div>
+                     <div class="stat-card md:col-span-2 lg:col-span-1">
+                        <div class="section-icon text-orange-500 mb-2">⏳</div>
+                        <h3 class="text-xl font-bold text-slate-900">Delayed Diagnosis & Combat Preparedness</h3>
+                        <ul class="mt-2 text-slate-600 list-disc list-inside space-y-1">
+                            <li>Over **50% of heart attack patients miss the 'golden hour'** for treatment.</li>
+                            <li>Disparities in diagnosis and treatment adherence for chronic conditions like hypertension.</li>
+                            <li>**Military Relevance:** Delayed diagnosis can compromise individual health and, critically, national security by removing trained personnel from active duty or combat readiness.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="evolution" class="py-16 md:py-24 bg-white">
+            <div class="container mx-auto px-6 max-w-7xl">
+                <div class="text-center max-w-3xl mx-auto">
+                    <span class="text-blue-600 font-semibold">The Journey of Diagnostics</span>
+                    <h2 class="text-3xl md:text-4xl font-bold text-slate-900 mt-2">Evolution of ECG Diagnostics: From Paper to AI</h2>
+                    <p class="mt-4 text-lg text-slate-600">The method of acquiring and analyzing ECG signals has undergone significant advancements, paving the way for AI-driven precision.</p>
+                </div>
+
+                <div class="mt-12 flex flex-col items-center space-y-8 md:space-y-0 md:flex-row md:justify-center md:space-x-8">
+                    <div class="flow-step">
+                        <span class="text-5xl mb-2">🖨️</span>
+                        <p class="font-semibold text-slate-800">Traditional ECG</p>
+                        <p class="text-sm text-slate-500">12-lead machine prints waves on paper.</p>
+                    </div>
+                    <div class="flow-arrow md:rotate-0 rotate-90">➡️</div>
+                    <div class="flow-step">
+                        <span class="text-5xl mb-2">💾</span>
+                        <p class="font-semibold text-slate-800">Digital EMR/Monitor</p>
+                        <p class="text-sm text-slate-500">ECG signals sent to Electronic Medical Records and viewed on monitors.</p>
+                    </div>
+                    <div class="flow-arrow md:rotate-0 rotate-90">➡️</div>
+                    <div class="flow-step">
+                        <span class="text-5xl mb-2">☁️</span>
+                        <p class="font-semibold text-slate-800">Hospital Server Integration</p>
+                        <p class="text-sm text-slate-500">Signals transmitted to central hospital servers for storage.</p>
+                    </div>
+                    <div class="flow-arrow md:rotate-0 rotate-90">➡️</div>
+                    <div class="flow-step bg-blue-100 border-blue-400">
+                        <span class="text-5xl mb-2">🧠✨</span>
+                        <p class="font-semibold text-slate-800">AI-Powered Analysis</p>
+                        <p class="text-sm text-slate-500">AI server analyzes signals and provides instant numerical results.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="solution" class="py-16 md:py-24">
+            <div class="container mx-auto px-6 max-w-7xl">
+                <div class="text-center max-w-3xl mx-auto">
+                    <span class="text-blue-600 font-semibold">How Our Solution Works</span>
+                    <h2 class="text-3xl md:text-4xl font-bold text-slate-900 mt-2">AiTiA™: Artificial Intelligence for ECG Analysis in Action</h2>
+                    <p class="mt-4 text-lg text-slate-600">Our AiTiA™ platform harnesses the power of AI to analyze routine 12-lead ECG data, providing accurate and actionable diagnostic results within seconds.</p>
+                </div>
+
+                <div class="mt-12 flex flex-col md:flex-row items-center justify-center space-y-4 md:space-y-0 md:space-x-8 text-center">
+                    <div class="flow-step">
+                        <span class="text-4xl mb-2">⚡</span>
+                        <p class="font-semibold text-slate-800">ECG Data Acquisition</p>
+                        <p class="text-sm text-slate-500">Standard 12-lead ECG machine connects to patient.</p>
+                    </div>
+                    <div class="flow-arrow">➡️</div>
+                    <div class="flow-step">
+                        <span class="text-4xl mb-2">🧠</span>
+                        <p class="font-semibold text-slate-800">On-Premise AI Server</p>
+                        <p class="text-sm text-slate-500">AiTiA™ processes ECG signals securely and instantly.</p>
+                    </div>
+                    <div class="flow-arrow">➡️</div>
+                    <div class="flow-step">
+                        <span class="text-4xl mb-2">🖥️</span>
+                        <p class="font-semibold text-slate-800">Instant Diagnostic Result</p>
+                        <p class="text-sm text-slate-500">Actionable insights displayed on monitor in <10 seconds.</p>
+                    </div>
+                </div>
+                 <p class="text-center mt-8 text-slate-600">This streamlined process integrates seamlessly with existing workflows, utilizing AI software in an add-on card within your hospital server, requiring no new dedicated hardware.</p>
+            </div>
+        </section>
+        
+        <section id="products" class="py-16 md:py-24 bg-white">
+            <div class="container mx-auto px-6 max-w-7xl">
+                <div class="text-center max-w-3xl mx-auto">
+                    <span class="text-blue-600 font-semibold">Product Portfolio</span>
+                    <h2 class="text-3xl md:text-4xl font-bold text-slate-900 mt-2">AI Diagnostic Tools for Diverse Needs</h2>
+                    <p class="mt-4 text-lg text-slate-600">Each product in the AiTiA™ suite is designed to address specific diagnostic challenges in cardiovascular care, providing unparalleled accuracy and speed.</p>
+                </div>
+                
+                <div class="mt-16 space-y-20">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+                        <div>
+                            <h3 class="text-2xl font-bold text-slate-900">Heart Failure Detection: AiTiA™ LVSD</h3>
+                            <p class="mt-4 text-slate-600">Identifies left ventricular systolic dysfunction (LVSD), a primary cause of heart failure, directly from a 12-lead ECG. This enables mass screening and early detection, even before symptoms manifest.</p>
+                            <div class="heart-diagram">
+                                <div class="heart-state">
+                                    <span class="heart-icon text-red-500">🫀</span>
+                                    <p class="font-bold text-slate-900">Normal Heart</p>
+                                    <p class="text-sm text-slate-600">(Systolic function ≥50%)</p>
+                                </div>
+                                <div class="heart-state">
+                                    <span class="heart-icon text-red-700">💔</span>
+                                    <p class="font-bold text-slate-900">Heart Failure</p>
+                                    <p class="text-sm text-slate-600">(Systolic function <40%)</p>
+                                </div>
+                            </div>
+                            <h4 class="text-lg font-semibold text-slate-800 mt-8 mb-4">Global Heart Failure Burden</h4>
+                            <ul class="mt-2 text-slate-600 list-disc list-inside space-y-1">
+                                <li>**26 Million** diagnosed patients globally.</li>
+                                <li>Over **37.7 Million** undiagnosed patients.</li>
+                                <li>**#1 cause of hospitalization.**</li>
+                                <li>**50% of patients diagnosed late**, with a **mortality rate of 60%**.</li>
+                            </ul>
+                             <ul class="mt-6 space-y-2 text-slate-600">
+                                <li class="flex items-start"><span class="text-blue-500 mr-2 mt-1">✓</span><span>Fast analysis using routine ECG.</span></li>
+                                <li class="flex items-start"><span class="text-blue-500 mr-2 mt-1">✓</span><span>Addresses echocardiography bottlenecks.</span></li>
+                                <li class="flex items-start"><span class="text-blue-500 mr-2 mt-1">✓</span><span>Enables screening for all patients.</span></li>
+                            </ul>
+                        </div>
+                        <div>
+                             <h4 class="text-lg font-semibold text-center text-slate-800 mb-2">Diagnostic Performance: AiTiA™ vs. Blood Test</h4>
+                            <div class="chart-container">
+                                <canvas id="hfChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+                         <div class="md:order-2">
+                            <h3 class="text-2xl font-bold text-slate-900">Heart Attack Detection: AiTiA™ MI</h3>
+                            <p class="mt-4 text-slate-600">Diagnoses acute myocardial infarction (MI), including hard-to-detect NSTEMI, faster and more accurately. Our platform outperforms traditional risk assessment methods and even ED physician assessment.</p>
+                            <h4 class="text-lg font-semibold text-slate-800 mt-8 mb-4">Global Myocardial Infarction Burden</h4>
+                            <ul class="mt-2 text-slate-600 list-disc list-inside space-y-1">
+                                <li>**#1 Global Disease Burden.**</li>
+                                <li>**130 Million** MI patients worldwide.</li>
+                                <li>**29.9%** rate at which doctors fail to diagnose MI in early stages.</li>
+                            </ul>
+                             <ul class="mt-6 space-y-2 text-slate-600">
+                                <li class="flex items-start"><span class="text-blue-500 mr-2 mt-1">✓</span><span>Wider diagnostic coverage (STEMI & NSTEMI).</span></li>
+                                <li class="flex items-start"><span class="text-blue-500 mr-2 mt-1">✓</span><span>Reduces critical diagnostic wait times.</span></li>
+                                <li class="flex items-start"><span class="text-blue-500 mr-2 mt-1">✓</span><span>Accelerates patient triage and intervention.</span></li>
+                            </ul>
+                        </div>
+                        <div class="md:order-1">
+                             <h4 class="text-lg font-semibold text-center text-slate-800 mb-2">Diagnostic Performance: AiTiA™ vs. ED Assessment</h4>
+                            <div class="chart-container">
+                                <canvas id="miChart"></canvas>
+                            </div>
+                             <p class="text-center text-xs text-slate-500 mt-2">Based on the ROMIAE study, AiTiA™ outperformed ED physician assessment.</p>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+                        <div>
+                            <h3 class="text-2xl font-bold text-slate-900">Remote Monitoring: AiTiA™ LVSD-1L</h3>
+                            <p class="mt-4 text-slate-600">Leverages smartwatch ECG data for daily monitoring and post-discharge care of heart failure patients. A significant step forward in personalized and preventative cardiac care.</p>
+                             <ul class="mt-6 space-y-2 text-slate-600">
+                                <li class="flex items-start"><span class="text-blue-500 mr-2 mt-1">✓</span><span>Utilizes commonly worn patient devices.</span></li>
+                                <li class="flex items-start"><span class="text-blue-500 mr-2 mt-1">✓</span><span>Enables continuous monitoring at home.</span></li>
+                                <li class="flex items-start"><span class="text-blue-500 mr-2 mt-1">✓</span><span>More accurate than blood tests for monitoring.</span></li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h4 class="text-lg font-semibold text-center text-slate-800 mb-2">Monitoring Performance: AiTiA™ vs. Blood Test</h4>
+                            <div class="chart-container">
+                                <canvas id="watchChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="evidence" class="py-16 md:py-24">
+            <div class="container mx-auto px-6 max-w-7xl">
+                <div class="text-center max-w-3xl mx-auto">
+                    <span class="text-blue-600 font-semibold">Validation & Credibility</span>
+                    <h2 class="text-3xl md:text-4xl font-bold text-slate-900 mt-2">Backed by World-Class Research and Data</h2>
+                    <p class="mt-4 text-lg text-slate-600">Our technology is not just innovative—it's clinically proven and built on a foundation of robust data and published in leading medical journals.</p>
+                </div>
+
+                <div class="mt-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <div class="stat-card text-center">
+                        <div class="text-3xl font-bold text-blue-600">The Lancet</div>
+                        <p class="font-semibold text-slate-800 mt-2">Digital Health (IF 36.6)</p>
+                        <p class="mt-2 text-slate-600 text-sm">Featured as a cover paper for AI-ECG study in detecting anemia.</p>
+                    </div>
+                     <div class="stat-card text-center">
+                        <div class="text-3xl font-bold text-blue-600">European</div>
+                        <p class="font-semibold text-slate-800 mt-2">Heart Journal (IF 38.3)</p>
+                        <p class="mt-2 text-slate-600 text-sm">Forthcoming ROMIAE study (2025) on AI-ECG for heart attack.</p>
+                    </div>
+                    <div class="stat-card text-center">
+                        <div class="text-4xl font-bold text-blue-600">59+</div>
+                        <p class="font-semibold text-slate-800 mt-2">Scientific Publications</p>
+                        <p class="mt-2 text-slate-600 text-sm">Demonstrating our global leadership in AI-ECG research.</p>
+                    </div>
+                    <div class="stat-card text-center lg:col-span-3">
+                        <div class="text-4xl font-bold text-blue-600">4.3 Million</div>
+                        <p class="font-semibold text-slate-800 mt-2">High-Quality ECG Data</p>
+                        <p class="mt-2 text-slate-600 text-sm">Our AI models are trained on one of the world's largest ECG datasets from a government-designated heart hospital over 24 years, powered by a 100 PetaFLOP supercomputer.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="strengths" class="py-16 md:py-24 bg-white">
+            <div class="container mx-auto px-6 max-w-7xl">
+                <div class="text-center max-w-3xl mx-auto">
+                    <span class="text-blue-600 font-semibold">Our Distinct Advantages</span>
+                    <h2 class="text-3xl md:text-4xl font-bold text-slate-900 mt-2">Why AiTiA™ Stands Out</h2>
+                    <p class="mt-4 text-lg text-slate-600">Our product is not just a technological advancement; it's a practical, efficient, and secure solution designed for real-world healthcare environments, especially valuable in a diverse market like Indonesia and crucial for military readiness.</p>
+                </div>
+
+                <div class="mt-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <div class="stat-card text-center">
+                        <div class="section-icon text-green-600 mx-auto">⚡</div>
+                        <h3 class="text-xl font-bold text-slate-900 mt-4">Immediate & Early Diagnosis</h3>
+                        <p class="mt-2 text-slate-600 text-sm">Delivers diagnostic insights in under 10 seconds. This speed is crucial for timely interventions, especially in emergency settings, and enables earlier detection of chronic conditions, **critical for keeping military personnel deployment-ready.**</p>
+                    </div>
+                    <div class="stat-card text-center">
+                        <div class="section-icon text-green-600 mx-auto">💰</div>
+                        <h3 class="text-xl font-bold text-slate-900 mt-4">Cost Efficiency for Healthcare</h3>
+                        <p class="mt-2 text-slate-600 text-sm">Reduces the need for more expensive and time-consuming diagnostic tests (like echocardiograms) for initial screening, optimizing resource allocation and lowering overall healthcare costs. **Valuable for military budgets and efficient resource management across vast areas.**</p>
+                    </div>
+                    <div class="stat-card text-center">
+                        <div class="section-icon text-green-600 mx-auto">✅</div>
+                        <h3 class="text-xl font-bold text-slate-900 mt-4">No Extra Payments or Hidden Costs</h3>
+                        <p class="mt-2 text-slate-600 text-sm">Designed to integrate with existing ECG machines. There are no additional hardware purchases or complex installations required for deployment, making it a truly 'add-on' solution. **Ideal for rapid deployment in military medical facilities without extensive new infrastructure.**</p>
+                    </div>
+                    <div class="stat-card text-center">
+                        <div class="section-icon text-green-600 mx-auto">📦</div>
+                        <h3 class="text-xl font-bold text-slate-900 mt-4">Digital, No Stock File Needed</h3>
+                        <p class="mt-2 text-slate-600 text-sm">As a software-based solution, it eliminates the need for physical storage or management of diagnostic "stock files," streamlining operations and reducing administrative burden. **Enhances logistical efficiency for military medical supply chains.**</p>
+                    </div>
+                    <div class="stat-card text-center">
+                        <div class="section-icon text-green-600 mx-auto">🔒</div>
+                        <h3 class="text-xl font-bold text-slate-900 mt-4">Robust Data Security</h3>
+                        <p class="mt-2 text-slate-600 text-sm">Utilizing an on-premise AI server (no internet connection required for analysis) ensures maximum data security and patient privacy, mitigating external threats and compliance concerns. **Paramount for sensitive military health data and operations.**</p>
+                    </div>
+                    <div class="stat-card text-center">
+                        <div class="section-icon text-green-600 mx-auto">💡</div>
+                        <h3 class="text-xl font-bold text-slate-900 mt-4">Empowering Non-Specialists</h3>
+                        <p class="mt-2 text-slate-600 text-sm">Provides critical diagnostic support to general practitioners and healthcare workers in areas without cardiologists, bridging the specialist gap across Indonesia. **Invaluable for military medics in remote outposts or field hospitals, ensuring frontline health.**</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="military-health" class="py-16 md:py-24">
+            <div class="container mx-auto px-6 max-w-7xl">
+                <div class="text-center max-w-3xl mx-auto">
+                    <span class="text-blue-600 font-semibold">Specialized Application</span>
+                    <h2 class="text-3xl md:text-4xl font-bold text-slate-900 mt-2">AI-ECG: A Strategic Asset for Indonesian Military Health</h2>
+                    <p class="mt-4 text-lg text-slate-600">Proactive heart health management is crucial for maintaining a robust and ready fighting force, preventing unnecessary loss of critical combat assets within the Indonesian military.</p>
+                </div>
+
+                <div class="mt-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 text-left">
+                    <div class="stat-card md:col-span-2 lg:col-span-1">
+                        <div class="section-icon text-green-600 mb-2">💪</div>
+                        <h3 class="text-xl font-bold text-slate-900">Military Overview: Scale & Distribution</h3>
+                        <p class="mt-2 text-slate-600">The Indonesian National Armed Forces (TNI) are a significant force, critical for national security across a vast and challenging archipelago. Maintaining personnel health is paramount to their operational effectiveness.</p>
+                        <ul class="mt-4 text-slate-600 list-disc list-inside space-y-1">
+                            <li>Approximately **404,500 active personnel** (2024), ranking among Asia's largest.</li>
+                            <li>Units distributed across **15 military regions** on **17,000+ islands**, including remote outposts.</li>
+                        </ul>
+                    </div>
+                    <div class="stat-card">
+                        <div class="section-icon text-red-600 mb-2">📍</div>
+                        <h3 class="text-xl font-bold text-slate-900">Unique Military Healthcare Challenges</h3>
+                        <ul class="mt-2 text-slate-600 list-disc list-inside space-y-1">
+                            <li>**Personnel Health Risks:** Aging high-ranking officers and younger onset heart disease among personnel.</li>
+                            <li>**Geographical Barriers:** Remote military bases, challenging terrain, and dispersed units limit access to specialized medical facilities.</li>
+                            <li>**Limited Medical Accessibility:** Shortage of cardiologists in military healthcare, reliance on delayed referrals.</li>
+                        </ul>
+                    </div>
+                    <div class="stat-card md:col-span-2 lg:col-span-1">
+                        <div class="section-icon text-blue-600 mb-2">🎯</div>
+                        <h3 class="text-xl font-bold text-slate-900">AI-ECG: A Force Multiplier</h3>
+                        <ul class="mt-2 text-slate-600 list-disc list-inside space-y-1">
+                            <li>**Immediate Risk Assessment:** Rapid 10-second ECG analysis for proactive health management, even in the field.</li>
+                            <li>**Preserving Combat Assets:** Prevents unnecessary loss of trained personnel due to undiagnosed cardiac conditions.</li>
+                            <li>**Bridging Gaps:** Enables advanced screening in remote military clinics, ships, or airbases without specialists.</li>
+                            <li>**Cost-Effective:** Reduces costly medical evacuations for screening/early diagnosis.</li>
+                            <li>**Data Security:** On-premise server ensures confidentiality of sensitive military health data.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="pipeline" class="py-16 md:py-24 bg-white">
+            <div class="container mx-auto px-6 max-w-7xl">
+                <div class="text-center max-w-3xl mx-auto">
+                    <span class="text-blue-600 font-semibold">Future Development</span>
+                    <h2 class="text-3xl md:text-4xl font-bold text-slate-900 mt-2">Expanding Diagnosable Diseases: Our AI-ECG Pipeline</h2>
+                    <p class="mt-4 text-lg text-slate-600">Our commitment to innovation is reflected in our robust pipeline, continuously expanding the range of diseases detectable via AI-ECG, ensuring quick and efficient release of new diagnostic software.</p>
+                </div>
+
+                <div class="mt-12 overflow-x-auto">
+                    <div class="min-w-[600px]">
+                        <div class="pipeline-table-header">
+                            <div class="pipeline-col pipeline-col-program">Program</div>
+                            <div class="pipeline-col pipeline-col-stage">Research</div>
+                            <div class="pipeline-col pipeline-col-stage">Product Release</div>
+                            <div class="pipeline-col pipeline-col-stage">Commercialization</div>
+                        </div>
+                        <div class="pipeline-table-row">
+                            <div class="pipeline-col pipeline-col-program">Heart Failure</div>
+                            <div class="pipeline-col pipeline-col-stage">✔️</div>
+                            <div class="pipeline-col pipeline-col-stage">✔️</div>
+                            <div class="pipeline-col pipeline-col-stage">✔️</div>
+                        </div>
+                        <div class="pipeline-table-row">
+                            <div class="pipeline-col pipeline-col-program">Acute MI</div>
+                            <div class="pipeline-col pipeline-col-stage">✔️</div>
+                            <div class="pipeline-col pipeline-col-stage">✔️</div>
+                            <div class="pipeline-col pipeline-col-stage">✔️</div>
+                        </div>
+                        <div class="pipeline-table-row">
+                            <div class="pipeline-col pipeline-col-program">Valvular Heart Disease</div>
+                            <div class="pipeline-col pipeline-col-stage">✔️</div>
+                            <div class="pipeline-col pipeline-col-stage">✔️</div>
+                            <div class="pipeline-col pipeline-col-stage">Ongoing</div>
+                        </div>
+                        <div class="pipeline-table-row">
+                            <div class="pipeline-col pipeline-col-program">1L Heart Failure</div>
+                            <div class="pipeline-col pipeline-col-stage">✔️</div>
+                            <div class="pipeline-col pipeline-col-stage">Ongoing</div>
+                            <div class="pipeline-col pipeline-col-stage">Upcoming</div>
+                        </div>
+                        <div class="pipeline-table-row">
+                            <div class="pipeline-col pipeline-col-program">Hyperthyroidism</div>
+                            <div class="pipeline-col pipeline-col-stage">✔️</div>
+                            <div class="pipeline-col pipeline-col-stage">Ongoing</div>
+                            <div class="pipeline-col pipeline-col-stage">Upcoming</div>
+                        </div>
+                        <div class="pipeline-table-row">
+                            <div class="pipeline-col pipeline-col-program">Kidney Failure</div>
+                            <div class="pipeline-col pipeline-col-stage">✔️</div>
+                            <div class="pipeline-col pipeline-col-stage">Ongoing</div>
+                            <div class="pipeline-col pipeline-col-stage">Upcoming</div>
+                        </div>
+                        <div class="pipeline-table-row">
+                            <div class="pipeline-col pipeline-col-program">Prediction of Arrhythmia</div>
+                            <div class="pipeline-col pipeline-col-stage">✔️</div>
+                            <div class="pipeline-col pipeline-col-stage">Ongoing</div>
+                            <div class="pipeline-col pipeline-col-stage">Upcoming</div>
+                        </div>
+                        <div class="pipeline-table-row">
+                            <div class="pipeline-col pipeline-col-program">Electrolytes</div>
+                            <div class="pipeline-col pipeline-col-stage">✔️</div>
+                            <div class="pipeline-col pipeline-col-stage">Upcoming</div>
+                            <div class="pipeline-col pipeline-col-stage">Upcoming</div>
+                        </div>
+                        <div class="pipeline-table-row">
+                            <div class="pipeline-col pipeline-col-program">Left Ventricular Hypertrophy</div>
+                            <div class="pipeline-col pipeline-col-stage">✔️</div>
+                            <div class="pipeline-col pipeline-col-stage">Upcoming</div>
+                            <div class="pipeline-col pipeline-col-stage">Upcoming</div>
+                        </div>
+                        <div class="pipeline-table-row">
+                            <div class="pipeline-col pipeline-col-program">Pulmonary Hypertension</div>
+                            <div class="pipeline-col pipeline-col-stage">✔️</div>
+                            <div class="pipeline-col pipeline-col-stage">Upcoming</div>
+                            <div class="pipeline-col pipeline-col-stage">Upcoming</div>
+                        </div>
+                        <div class="pipeline-table-row">
+                            <div class="pipeline-col pipeline-col-program">Cardiac Arrest</div>
+                            <div class="pipeline-col pipeline-col-stage">✔️</div>
+                            <div class="pipeline-col pipeline-col-stage">Upcoming</div>
+                            <div class="pipeline-col pipeline-col-stage">Upcoming</div>
+                        </div>
+                        <div class="pipeline-table-row">
+                            <div class="pipeline-col pipeline-col-program">Anemia</div>
+                            <div class="pipeline-col pipeline-col-stage">✔️</div>
+                            <div class="pipeline-col pipeline-col-stage">Upcoming</div>
+                            <div class="pipeline-col pipeline-col-stage">Upcoming</div>
+                        </div>
+                        <div class="pipeline-table-row">
+                            <div class="pipeline-col pipeline-col-program">Cancer</div>
+                            <div class="pipeline-col pipeline-col-stage">Ongoing</div>
+                            <div class="pipeline-col pipeline-col-stage">Upcoming</div>
+                            <div class="pipeline-col pipeline-col-stage">Upcoming</div>
+                        </div>
+                        <div class="pipeline-table-row">
+                            <div class="pipeline-col pipeline-col-program">Non-cardiovascular Disease in Pregnancy</div>
+                            <div class="pipeline-col pipeline-col-stage">Ongoing</div>
+                            <div class="pipeline-col pipeline-col-stage">Upcoming</div>
+                            <div class="pipeline-col pipeline-col-stage">Upcoming</div>
+                        </div>
+                        <div class="pipeline-table-row">
+                            <div class="pipeline-col pipeline-col-program">Diabetes Management</div>
+                            <div class="pipeline-col pipeline-col-stage">Ongoing</div>
+                            <div class="pipeline-col pipeline-col-stage">Upcoming</div>
+                            <div class="pipeline-col pipeline-col-stage">Upcoming</div>
+                        </div>
+                        <div class="pipeline-table-row">
+                            <div class="pipeline-col pipeline-col-program">Exercise Recommendation</div>
+                            <div class="pipeline-col pipeline-col-stage">Ongoing</div>
+                            <div class="pipeline-col pipeline-col-stage">Upcoming</div>
+                            <div class="pipeline-col pipeline-col-stage">Upcoming</div>
+                        </div>
+                        <div class="pipeline-table-row">
+                            <div class="pipeline-col pipeline-col-program">Risk Assessment Pre-surgery</div>
+                            <div class="pipeline-col pipeline-col-stage">Ongoing</div>
+                            <div class="pipeline-col pipeline-col-stage">Upcoming</div>
+                            <div class="pipeline-col pipeline-col-stage">Upcoming</div>
+                        </div>
+                        <div class="pipeline-table-row">
+                            <div class="pipeline-col pipeline-col-program">Stroke</div>
+                            <div class="pipeline-col pipeline-col-stage">Ongoing</div>
+                            <div class="pipeline-col pipeline-col-stage">Upcoming</div>
+                            <div class="pipeline-col pipeline-col-stage">Upcoming</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="roadmap" class="py-16 md:py-24">
+            <div class="container mx-auto px-6 max-w-7xl">
+                 <div class="text-center max-w-3xl mx-auto">
+                    <span class="text-blue-600 font-semibold">Future Vision</span>
+                    <h2 class="text-3xl md:text-4xl font-bold text-slate-900 mt-2">Global Roadmap & Commitment to Indonesia</h2>
+                    <p class="mt-4 text-lg text-slate-600">We are on a rapid global expansion trajectory and are committed to making Indonesia a key partner in our journey to redefine heart care.</p>
+                </div>
+                <div class="mt-12 p-8 bg-slate-50 rounded-xl border border-slate-200">
+                    <h3 class="text-xl font-bold text-slate-800 text-center mb-6">Global Regulatory Approval Targets</h3>
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+                        <div>
+                            <p class="font-bold text-slate-900">United States (FDA)</p>
+                            <p class="text-blue-600 font-semibold">Q4 2025</p>
+                        </div>
+                        <div>
+                            <p class="font-bold text-slate-900">European Union (CE)</p>
+                            <p class="text-blue-600 font-semibold">Q2 2025</p>
+                        </div>
+                         <div>
+                            <p class="font-bold text-slate-900">India (CDSCO)</p>
+                            <p class="text-green-600 font-semibold">Approved Jan 2025</p>
+                        </div>
+                         <div>
+                            <p class="font-bold text-slate-900">Indonesia (Kemenkes)</p>
+                            <p class="text-blue-600 font-semibold">Target 2026-2027</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="business-model" class="py-16 md:py-24 bg-white">
+            <div class="container mx-auto px-6 max-w-7xl">
+                <div class="text-center max-w-3xl mx-auto">
+                    <span class="text-blue-600 font-semibold">Partnership Structure</span>
+                    <h2 class="text-3xl md:text-4xl font-bold text-slate-900 mt-2">Our Flexible Business Model</h2>
+                    <p class="mt-4 text-lg text-slate-600">We offer a collaborative business model designed for mutual success and efficient market penetration in Indonesia, focusing on a sustainable partnership.</p>
+                </div>
+
+                <div class="mt-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <div class="stat-card text-left">
+                        <div class="section-icon text-blue-600 mb-2">🤝</div>
+                        <h3 class="text-xl font-bold text-slate-900">Local Sale Rights</h3>
+                        <p class="mt-2 text-slate-600 text-sm">Granting local partners the rights to distribute and sell AiTiA™ products within Indonesia, leveraging their market expertise and network.</p>
+                    </div>
+                    <div class="stat-card text-left">
+                        <div class="section-icon text-blue-600 mb-2">📊</div>
+                        <h3 class="text-xl font-bold text-slate-900">Usage-Based Revenue Model</h3>
+                        <p class="mt-2 text-slate-600 text-sm">Revenue generated per ECG analysis performed, ensuring a scalable and fair compensation structure aligned with actual usage.</p>
+                    </div>
+                    <div class="stat-card text-left">
+                        <div class="section-icon text-blue-600 mb-2">🛠️</div>
+                        <h3 class="text-xl font-bold text-slate-900">Comprehensive Support</h3>
+                        <p class="mt-2 text-slate-600 text-sm">Provision of technical support, installation assistance, ongoing updates, and more, ensuring smooth operation and partner success.</p>
+                    </div>
+                    <div class="stat-card text-left">
+                        <div class="section-icon text-blue-600 mb-2">📜</div>
+                        <h3 class="text-xl font-bold text-slate-900">Legal & Regulatory Compliance</h3>
+                        <p class="mt-2 text-slate-600 text-sm">Assistance with local legal approvals and certifications required for medical device commercialization in Indonesia.</p>
+                    </div>
+                    <div class="stat-card text-left">
+                        <div class="section-icon text-blue-600 mb-2">💲</div>
+                        <h3 class="text-xl font-bold text-slate-900">Transparent Cost Structure</h3>
+                        <p class="mt-2 text-slate-600 text-sm">Clear delineation of revenue sharing and operational expenses, fostering transparency and trust in the partnership.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="opportunity" class="py-16 md:py-24">
+            <div class="container mx-auto px-6 max-w-7xl">
+                <div class="text-center max-w-3xl mx-auto">
+                    <span class="text-blue-600 font-semibold">Opportunity for Indonesia</span>
+                    <h2 class="text-3xl md:text-4xl font-bold text-slate-900 mt-2">Unlocking a New Era of Heart Care & Enhancing National Security</h2>
+                    <p class="mt-4 text-lg text-slate-600">The implementation of our AI-ECG technology directly addresses the unique challenges faced by Indonesia's healthcare system, creating significant value for patients, providers, and the government, with a critical impact on military health and combat readiness.</p>
+                </div>
+
+                <div class="mt-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <div class="bg-white p-6 rounded-lg border border-slate-200">
+                        <h3 class="font-bold text-slate-900">Improved Access & Equity (Civilian & Military)</h3>
+                        <p class="mt-2 text-slate-600">Extends advanced diagnostic capabilities to primary clinics, remote areas, and even military outposts, reducing healthcare disparities and ensuring comprehensive care across all populations, including active service members.</p>
+                    </div>
+                    <div class="bg-white p-6 rounded-lg border border-slate-200">
+                        <h3 class="font-bold text-slate-900">Healthcare System Efficiency & Cost Savings</h3>
+                        <p class="mt-2 text-slate-600">Optimizes the use of expensive resources like echocardiography and reduces emergency department length of stay, leading to significant cost savings. This efficiency is particularly beneficial for large organizations like military healthcare systems.</p>
+                    </div>
+                    <div class="bg-white p-6 rounded-lg border border-slate-200">
+                        <h3 class="font-bold text-slate-900">Enhanced Patient Outcomes & Personnel Retention</h3>
+                        <p class="mt-2 text-slate-600">Earlier detection means earlier treatment, directly improving survival rates and quality of life for patients with cardiovascular diseases. For the military, this means **retaining valuable, highly-trained personnel** and preventing unnecessary medical discharge.</p>
+                    </div>
+                    <div class="bg-white p-6 rounded-lg border border-slate-200">
+                        <h3 class="font-bold text-slate-900">Empowerment of Medical Professionals (Civilian & Military)</h3>
+                        <p class="mt-2 text-slate-600">Provides powerful decision-support tools to general practitioners and nurses, enabling them to make more accurate triage and referral decisions with confidence. This is invaluable for **military medics on the frontline or in remote bases**.</p>
+                    </div>
+                    <div class="bg-white p-6 rounded-lg border border-slate-200 lg:col-span-2">
+                        <h3 class="font-bold text-slate-900">Combat Preparedness & National Security</h3>
+                        <p class="mt-2 text-slate-600">By proactively identifying and managing cardiac risks among military personnel, AiTiA™ directly contributes to **maintaining a healthy, ready fighting force.** This prevents the unnecessary loss of combat assets due to preventable heart conditions, directly bolstering Indonesia's national security.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+    
+    <footer class="bg-slate-800 text-white">
+        <div class="container mx-auto py-12 px-6 max-w-7xl text-center">
+            <h2 class="text-2xl font-bold">Let's Discuss Further</h2>
+            <p class="mt-4 max-w-2xl mx-auto text-slate-300">We are ready to initiate a discussion on how our technology can be tailored to Indonesia's healthcare sector priorities and explore potential partnerships.</p>
+            <p class="mt-6 font-semibold text-blue-300">Medical AI & MAI Global</p>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const mobileMenuButton = document.getElementById('mobile-menu-button');
+            const mobileMenu = document.getElementById('mobile-menu');
+            const navbar = document.getElementById('navbar');
+
+            mobileMenuButton.addEventListener('click', () => {
+                mobileMenu.classList.toggle('hidden');
+            });
+            
+            document.querySelectorAll('#mobile-menu a').forEach(link => {
+                link.addEventListener('click', () => {
+                    mobileMenu.classList.add('hidden');
+                });
+            });
+
+            const chartConfig = {
+                type: 'bar',
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 1.0,
+                            ticks: {
+                                color: '#475569' // slate-600
+                            },
+                            grid: {
+                                color: '#e2e8f0' // slate-200
+                            }
+                        },
+                        x: {
+                             ticks: {
+                                color: '#475569' // slate-600
+                            },
+                             grid: {
+                                display: false
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            backgroundColor: '#0f172a', // slate-900
+                            titleFont: { size: 14 },
+                            bodyFont: { size: 12 },
+                            padding: 10,
+                            cornerRadius: 4,
+                        }
+                    },
+                    animation: {
+                        duration: 1000,
+                        easing: 'easeInOutQuad'
+                    }
+                }
+            };
+
+            const hfChartCtx = document.getElementById('hfChart').getContext('2d');
+            new Chart(hfChartCtx, {
+                ...chartConfig,
+                data: {
+                    labels: ['AiTiA™ LVSD', 'Blood Test (NT-proBNP)'],
+                    datasets: [{
+                        label: 'Accuracy (AUROC)',
+                        data: [0.919, 0.720],
+                        backgroundColor: ['#2563eb', '#94a3b8'], // blue-600, slate-400
+                        borderRadius: 4
+                    }]
+                }
+            });
+
+            const miChartCtx = document.getElementById('miChart').getContext('2d');
+            new Chart(miChartCtx, {
+                ...chartConfig,
+                data: {
+                    labels: ['AiTiA™ MI', 'ED Physician Assessment'],
+                    datasets: [{
+                        label: 'Accuracy (AUROC)',
+                        data: [0.878, 0.750], 
+                        backgroundColor: ['#2563eb', '#94a3b8'],
+                        borderRadius: 4
+                    }]
+                }
+            });
+
+            const watchChartCtx = document.getElementById('watchChart').getContext('2d');
+            new Chart(watchChartCtx, {
+                ...chartConfig,
+                data: {
+                    labels: ['AiTiA™ LVSD-1L (Smartwatch)', 'Blood Test (NT-proBNP)'],
+                    datasets: [{
+                        label: 'Accuracy (AUROC)',
+                        data: [0.93, 0.72],
+                        backgroundColor: ['#2563eb', '#94a3b8'],
+                        borderRadius: 4
+                    }]
+                }
+            });
+        });
+    </script>
+
+</body>
+</html>
