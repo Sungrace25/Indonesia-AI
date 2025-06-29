@@ -3,15 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Business Model(example)</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <title>Displaying Image Example</title>
+    <script src="Bmodel.png"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <!-- Chosen Palette: Corporate Blue and Slate -->
-    <!-- Application Structure Plan: A simple, single-page layout designed to demonstrate image placement. Includes a header, a main content section for the image and text, and a footer. -->
-    <!-- Visualization & Content Choices: The core of this page is a placeholder image using placehold.co to demonstrate the <img> tag usage within Tailwind CSS for styling and responsiveness. Text explains the concept. CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
-    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
     <style>
         body {
             font-family: 'Inter', sans-serif;
@@ -52,33 +48,20 @@
     <main>
         <section class="py-16 md:py-24">
             <div class="container mx-auto px-6 text-center max-w-4xl">
-                <h1 class="text-3xl md:text-4xl font-bold text-slate-900 leading-tight">Displaying Your Visual: "Bmodel"</h1>
-                <p class="mt-4 text-lg text-slate-600">This page demonstrates how an image can be integrated into a web page. Since I cannot directly embed your specific "AAA" image file, a placeholder is used here to illustrate the visual space and responsiveness.</p>
+                <h1 class="text-3xl md:text-4xl font-bold text-slate-900 leading-tight">Your Image Display Page</h1>
+                <p class="mt-4 text-lg text-slate-600">This page is ready to display your image. Remember to replace the placeholder source with your actual image file's path on GitHub.</p>
 
                 <div class="image-container bg-slate-100 border border-slate-300">
-                    <!-- 
-                        IMPORTANT: 
-                        I cannot directly embed your "AAA" image file.
-                        To display your actual image, you would need to:
-                        1. Upload your "AAA.jpg" (or .png, etc.) file to the same folder on your web server (e.g., GitHub repository).
-                        2. Replace the 'src' attribute below with the relative path to your image, e.g., 'src="AAA.jpg"'.
-                        
-                        This placeholder demonstrates the structure and responsiveness.
-                    -->
                     <img 
-                        src="Bmodel.png" 
-                        alt="Suggested business model"
+                        src="https://placehold.co/700x400/BFDBFE/2563EB?text=Your%20Image%20Goes%20Here" 
+                        alt="Placeholder image"
                         onerror="this.onerror=null; this.src='https://placehold.co/700x400/E2E8F0/94A3B8?text=Image%20Not%20Available';"
                         class="rounded-lg"
                     >
                 </div>
 
                 <p class="mt-8 text-slate-600">
-                    The image above is a placeholder. To display your actual image, you would upload your image file (e.g., `AAA.jpg`, `AAA.png`) to your GitHub repository alongside this HTML file. Then, you would update the `src` attribute in the `<img>` tag to point to your image file (e.g., `src="AAA.jpg"`).
-                    The `onerror` attribute provides a fallback in case the image fails to load.
-                </p>
-                <p class="mt-4 text-slate-600">
-                    This structure ensures your image is responsive, adapting to different screen sizes, and is visually integrated within the page's design.
+                    Once you replace the placeholder `src` with your image file (e.g., `src="AAA.jpg"`), your visual will appear here.
                 </p>
             </div>
         </section>
@@ -120,5 +103,8 @@
             });
         });
     </script>
+</body>
+</html>
+
 </body>
 </html>
